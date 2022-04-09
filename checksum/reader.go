@@ -26,12 +26,12 @@ func (r *CheckSumReader) Read(b []byte) (int, error) {
 	return n, err
 }
 
-func (r *CheckSumReader) Sum() []byte {
-	return r.checksum.Sum(nil)
+func (r *CheckSumReader) SumString() string {
+	return hex.EncodeToString(r.SumBytes())
 }
 
-func (r *CheckSumReader) String() string {
-	return hex.EncodeToString(r.checksum.Sum(nil))
+func (r *CheckSumReader) SumBytes() []byte {
+	return r.checksum.Sum(nil)
 }
 
 func (r *CheckSumReader) Close() error {

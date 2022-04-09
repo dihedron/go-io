@@ -14,7 +14,7 @@ import (
 func main() {
 
 	if len(os.Args) == 1 || os.Args[1] == "--help" {
-		fmt.Fprintf(os.Stderr, "%s <file> <file> <file>")
+		fmt.Fprintf(os.Stderr, "%s <file> <file> <file>", os.Args[0])
 	}
 
 	for _, arg := range os.Args[1:] {
@@ -26,7 +26,7 @@ func main() {
 
 			var buffer bytes.Buffer
 			if _, err := io.Copy(&buffer, reader); err == nil {
-				fmt.Printf("%s  %s\n", reader.String(), arg)
+				fmt.Printf("%s  %s\n", reader.SumString(), arg)
 			}
 		}
 	}

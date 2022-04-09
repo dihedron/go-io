@@ -26,12 +26,12 @@ func (w *CheckSumWriter) Write(b []byte) (int, error) {
 	return n, err
 }
 
-func (w *CheckSumWriter) Sum() []byte {
-	return w.checksum.Sum(nil)
+func (w *CheckSumWriter) SumString() string {
+	return hex.EncodeToString(w.SumBytes())
 }
 
-func (w *CheckSumWriter) String() string {
-	return hex.EncodeToString(w.checksum.Sum(nil))
+func (w *CheckSumWriter) SumBytes() []byte {
+	return w.checksum.Sum(nil)
 }
 
 func (w *CheckSumWriter) Close() error {
