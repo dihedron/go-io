@@ -4,39 +4,28 @@ import (
 	"encoding/hex"
 	"hash"
 	"io"
+
+	"github.com/dihedron/go-io/filter"
 )
 
-type CheckSumReader struct {
-	reader   io.Reader
+type Reader struct {
+	filter.Reader
 	checksum hash.Hash
 }
 
-func NewReader(reader io.Reader, checksum hash.Hash) *CheckSumReader {
-	return &CheckSumReader{
-		reader:   reader,
+func NewReader(reader io.Reader, checksum hash.Hash) *Reader {
+	return &Reader{
+		Reader: *filter.NewReader(reader, func(w *filter.Reader, data []byte, count int) {
+			checksum.Write(data[:count])
+		}),
 		checksum: checksum,
 	}
 }
 
-func (r *CheckSumReader) Read(b []byte) (int, error) {
-	n, err := r.reader.Read(b)
-	if err == nil {
-		r.checksum.Write(b[:n])
-	}
-	return n, err
-}
-
-func (r *CheckSumReader) SumString() string {
+func (r *Reader) SumString() string {
 	return hex.EncodeToString(r.SumBytes())
 }
 
-func (r *CheckSumReader) SumBytes() []byte {
+func (r *Reader) SumBytes() []byte {
 	return r.checksum.Sum(nil)
-}
-
-func (r *CheckSumReader) Close() error {
-	if r, ok := r.reader.(io.ReadCloser); ok {
-		return r.Close()
-	}
-	return nil
 }
